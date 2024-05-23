@@ -56,9 +56,11 @@ def eratostenes(num):
     if rank == 0:
         primes = sorted(primes, key=lambda x: x[0])  # Ordenamos la lista según su primer elemento...
         all_primes = np.concatenate(primes)  # ...y las concatenamos en una unica lista.
-        print( len(all_primes) )
+        print( all_primes )
+        print()
+        print("Cantidad de Primos:", len(all_primes))
 
 
 if __name__ == '__main__':
-    num = int(sys.argv[1]) + 1
+    num = 1000 + 1
     eratostenes(num)
