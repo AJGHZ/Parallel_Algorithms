@@ -1,6 +1,5 @@
 from mpi4py import MPI
 import time
-import os
 
 # Inicialización de MPI
 comm = MPI.COMM_WORLD
