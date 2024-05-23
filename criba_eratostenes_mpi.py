@@ -19,23 +19,23 @@ def eratostenes(num):
     remainder = num % size  # El resto o segmento sobrante
 
     inc = 1  # Incrementador
-    share_variables = {"current_prime": 2, "total_length": n-1}  # Variables compartidas
+    share_variables = {"current_prime": 2, "total_length": num-1}  # Variables compartidas
     current_prime = 2  # El ultimo primo que hemos identificado
-    total_lenght = n-1  # La longitud total del arreglo de primos
+    total_lenght = num-1  # La longitud total del arreglo de primos
 
     if rank < size-1:
         # Creamos un arreglo de tamaño thread_part empezando por el numero 2...
-        xs = np.arange(rank*thread_part + 2, (rank+1)*n_part + 2)
+        xs = np.arange(rank*thread_part + 2, (rank+1)*thread_part + 2)
 
     else:
         # ...en la ultima linea añadimos el resto
-        xs = np.arange(rank*n_part + 2, (rank+1)*n_part + remainder)
+        xs = np.arange(rank*thread_part + 2, (rank+1)*thread_part + remainder)
 
     # Iteramos mientras el incrementador sea menor que el tamaño actual de la lista de primos
     while inc < share_variables["total_length"]:
         ys = []
         for x in xs:
-            if not is_div(x, share_variables["current_prime"]) or x == share_variables["last_prime"]:
+            if not is_div(x, share_variables["current_prime"]) or x == share_variables["current_prime"]:
                 ys.append(x)
 
         primes = comm.gather(ys, root=0)  # Enviamos todas las listas de primos al proceso 0
@@ -45,7 +45,7 @@ def eratostenes(num):
 
             # Actualizamos las variables compartidas
             share_variables["total_length"] = len(all_primes)
-            share_variables["current_prime"] = all_primes[i]
+            share_variables["current_prime"] = all_primes[inc]
 
         # Volvemos a enviar las variables compartidas y volvemos a repartir la lista actualizada a los procesos
         share_variables = comm.bcast(share_variables, root=0)
